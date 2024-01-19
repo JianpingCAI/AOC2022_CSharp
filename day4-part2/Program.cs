@@ -17,8 +17,7 @@ internal class Program
             string line = lines[i];
             Range[] ranges = line.Split(',').Select(x => { var pair = x.Split('-').Select(int.Parse).ToArray(); return new Range(pair[0], pair[1]); }).ToArray();
 
-            if (IsFullContain(ranges[0], ranges[1])
-                || IsFullContain(ranges[1], ranges[0]))
+            if (IsOverLapped(ranges[0], ranges[1]))
             {
                 ++result;
             }
@@ -29,13 +28,19 @@ internal class Program
         Console.WriteLine($"Time = {sw.Elapsed.TotalSeconds} seconds");
     }
 
-    private static bool IsFullContain(Range range1, Range range2)
+    private static bool IsOverLapped(Range range1, Range range2)
     {
-        if (range2.Start >= range1.Start && range2.End <= range1.End)
+        if (IsRange1StartInRange2(range1, range2)
+            || IsRange1StartInRange2(range2, range1))
         {
             return true;
         }
 
         return false;
+    }
+
+    private static bool IsRange1StartInRange2(Range range1, Range range2)
+    {
+        return range1.Start >= range2.Start && range1.Start <= range2.End;
     }
 }
